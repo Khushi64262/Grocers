@@ -1,0 +1,15 @@
+{% extends "layout.html" %} 
+{% block content %} 
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Welcome to the Admin Panel</h3>
+                <p>Here you can manage categories and products.</p>
+                <a href="{{ url_for('category_management') }}" class="btn btn-primary">Category Management</a>
+                <a href="{{ url_for('product_management') }}" class="btn btn-primary">Product Management</a>
+            </div>
+        </div>
+    </div>
+
+ {% endblock content %}

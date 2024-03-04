@@ -1,0 +1,25 @@
+{% extends "layout.html" %} 
+{% block content %} 
+<div class="container mt-4">
+    <h3>Edit Category</h3>
+
+    <div class="mb-3">
+        <form method="POST" action="{{ url_for('edit_category', category_id=category.id) }}">
+            {{ form.hidden_tag() }}  {# Include the CSRF token #}
+            <div class="form-group">
+                {{ form.name.label(for="categoryName") }}
+                {{ form.name(class="form-control", id="categoryName", placeholder="Enter updated category name") }}
+                {% if form.name.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.name.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-primary">Update Category</button>
+        </form>
+    </div>
+</div>
+
+ {% endblock content %}

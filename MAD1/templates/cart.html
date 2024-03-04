@@ -1,0 +1,41 @@
+{% extends "layout.html" %} 
+{% block content %} 
+
+<div class="container mt-4">
+    <h2>Your Cart</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Rate per Unit</th>
+                <th>Quantity</th>
+                <th>Total Price</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in user_cart %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.product.rate_per_unit }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.product.rate_per_unit * item.quantity }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('cart') }}">
+                        <input type="hidden" name="remove_item" value="{{ item.id }}">
+                        <button type="submit" class="btn btn-danger btn-sm">Remove Item</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="text-right">
+        <h4>Total Price: {{ total_price }}</h4>
+        <form method="POST" action="{{ url_for('checkout') }}">
+            <button type="submit" class="btn btn-primary">Checkout</button>
+        </form>
+    </div>
+</div>
+
+ {% endblock content %}

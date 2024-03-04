@@ -1,0 +1,76 @@
+ {% extends "layout.html" %} 
+{% block content %} 
+
+<div class="container mt-4">
+    <h5 style="color: rgb(122, 177, 197);">Available categories</h5>
+    <div class="row">
+        <div class="col-md-2">
+            <div class="d-flex flex-column">
+                {% for category in categories %}
+                <a href="#category{{ category.id }}" class="btn btn-info mb-2">{{ category.name }}</a>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-10">
+            <div class="row">
+                {% for category in categories %}
+                {% if category.products | length != 0 %}
+
+                <div class="col-md-6">
+                    <div class="card mb-4" style="background-color: hsl(180, 25%, 61%);">
+                        <div class="card-body">
+                            <h4 class="card-title">{{ category.name }}</h4>
+                        </div>
+                        <ul class="list-group list-group-flush" id="category{{ category.id }}">
+                            {% for product in products if product.category_id == category.id %}
+                            <li class="list-group-item border">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">{{ product.name }}</h5>
+                                    {% if loop.first %}  {# Check if it's the first product in the loop (i.e., the latest one) #}
+                                    <span class="badge badge-primary">Latest</span>
+                                    {% endif %}
+                                </div>
+                                <p class="mb-2">
+                                    <strong>Unit:</strong> {{ product.unit }}<br>
+                                    <strong>Price:</strong> {{ product.rate_per_unit }} INR<br>
+                                    <strong>Available Quantity:</strong> {{ product.units_available }}<br>
+                                    <strong>Expiry Date:</strong> {{ product.expiry_date }}<br>
+                                    <strong>Manufacturer:</strong> {{ product.manufacturer }}<br>
+                                    {% if product.units_available == 0 %}
+                                    <span class="text-danger">Out of Stock</span>
+                                    {% endif %}
+                                </p>
+                                <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}" class="add-to-cart-form">
+                                    <div class="input-group">
+                                        <input type="number" name="quantity" min="1" value="1" class="form-control form-control-sm" style="width: 50px;">
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-primary btn-sm">Add to Cart</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+$(document).ready(function() {
+    $("a[href^='#']").on('click', function(e) {
+        e.preventDefault();
+        var target = this.hash;
+        $('html, body').animate({
+            scrollTop: $(target).offset().top
+        }, 500);
+    });
+});
+</script>
+
+{% endblock content %}

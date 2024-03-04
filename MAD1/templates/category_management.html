@@ -1,0 +1,85 @@
+{% extends "layout.html" %} 
+{% block content %} 
+<div class="container mt-4">
+    <h3>Category Management</h3>
+
+    <div class="mb-3">
+        <h4>Add New Category</h4>
+        <form method="POST" action="{{ url_for('category_management') }}">
+            {{ form.hidden_tag() }}  {# Include the CSRF token #}
+            <div class="form-group">
+                {{ form.name.label(for="categoryName") }}
+                {{ form.name(class="form-control", id="categoryName", placeholder="Enter category name") }}
+                {% if form.name.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.name.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-primary">Add Category</button>
+        </form>
+    </div>
+    
+
+    <h4>List of Categories</h4>
+   <div class="accordion" id="productAccordion">
+        {% for category in categories %}
+            <div class="card">
+                <div class="card-header" id="category{{ category.id }}">
+                    <h5 class="mb-0" type="button" data-toggle="collapse" data-target="#categoryCollapse{{ category.id }}" aria-expanded="false" aria-controls="categoryCollapse{{ category.id }}">
+                        <p>
+                            {{ category.name }}
+                        </p>
+                    </h5>
+                </div>
+    
+                <div id="categoryCollapse{{ category.id }}" class="collapse" aria-labelledby="category{{ category.id }}" data-parent="#productAccordion">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4>List of Products</h4>
+                            <div>
+                                <a href="{{ url_for('edit_category', category_id=category.id) }}" class="btn btn-primary btn-sm">Edit Category</a>
+                                <a href="{{ url_for('delete_category', category_id=category.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this category? This action will also delete all associated products.');" >Delete Category</a>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Manufacturer</th>
+                                        <th>Expiry Date</th>
+                                        <th>Rate per Unit</th>
+                                        <th>Unit</th>
+                                        <th>Quantity</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for product in products if product.category.id == category.id %}
+                                        <tr>
+                                            <td>{{ product.name }}</td>
+                                            <td>{{ product.manufacturer }}</td>
+                                            <td>{{ product.expiry_date }}</td>
+                                            <td>{{ product.rate_per_unit }}</td>
+                                            <td>{{ product.unit }}</td>
+                                            <td>{{ product.units_available }}</td>
+                                            <td>
+                                                <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-primary btn-sm">Edit</a>
+                                                <a href="{{ url_for('delete_product', product_id=product.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this Product? ');">Delete</a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock content %}

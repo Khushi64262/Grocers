@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Grocers</title>
+    <style>
+        .content {
+            width: 100%;
+            padding: 20px;
+        }
+
+        .navbar {
+            margin-bottom: 30px;
+            background-color: hsl(180, 25%, 61%);
+        }
+
+        .navbar-nav .nav-link {
+            padding: 10px 15px;
+        }
+
+    </style>
+</head>
+<body>
+    {% if current_user.is_authenticated and current_user.is_admin %}
+    <nav class="navbar navbar-expand-lg navbar-light  py-4">
+        <a class="navbar-brand" href="{{url_for('home_admin')}}"> <h3>GROCERS </h3> </a>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('admin_summary')}}">Summary</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('category_management') }}">Category Management</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('product_management') }}">Product Management</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('logout') }}">Log Out</a>
+            </li>
+        </ul>
+    </nav>
+    {% elif current_user.is_authenticated and not current_user.is_admin %}
+    
+    <nav class="navbar navbar-expand-lg navbar-light  ">
+        <a class="navbar-brand" href="{{ url_for('home_user') }}">GROCERS</a>
+        <form class="form-inline my-2 my-lg-0 ml-auto" method="GET" action="{{ url_for('search_results') }}">
+            <input class="form-control mr-sm-2" type="search" name="query" placeholder="Search products" aria-label="Search">
+            <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
+        </form>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('cart') }}">Cart</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('logout') }}">Log Out</a>
+            </li>
+        </ul>
+    </nav>
+    
+
+   
+    {% else %}
+    <nav class="navbar navbar-expand-lg navbar-light  py-3">
+        <a class="navbar-brand" href="{{url_for('home')}}">GROCERS</a>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('login_admin') }}">Admin Login</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('login') }}">User Login</a>
+            </li>
+        </ul>
+    </nav>
+    {% endif %}
+    
+
+    <div class="container-fluid content">
+        {% with messages = get_flashed_messages(with_categories = true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
